@@ -1,52 +1,149 @@
+import React, { Component, useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert, Share } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert } from 'react-native';
+import { FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
+import * as Sharing from 'expo-sharing';
+// TODO: only import one part of sharing
 import Athlete from './src/components/Athlete';
-import React, { Component, useState } from 'react';
 
 export default function App() {
 
-    const [data, setData] = useState([
-        { name: 'Athlete 1', time: '1:08.9', descriptionVisible: true },
-        { name: 'Lukas', time: '1:08.9', descriptionVisible: false },
-        { name: 'Athlete 3', time: '1:08.9', descriptionVisible: false }
-    ]);
+    // const names = ['Athlete 1', 'Lukas', 'Athlete 3'];
+    // const [currentTime, setCurrentTime] = useState(new Date().getTime());
+
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setCurrentTime(new Date().getTime());
+    //     }, 100);
+
+    //     return () => {
+    //         clearInterval(interval); // Clear the interval when the component is unmounted
+    //     };
+    // }, []); // Empty dependency array ensures the effect runs only once
+
+
+    // Lets us access the Athlete components methods to start all timers at once for instance
+    const athleteRefs = useRef([]);
+
+    const startAll = () => {
+        athleteRefs.current.forEach((athleteRef) => {
+            athleteRef.start();
+        });
+    }
+
+    const stopAll = () => {
+        athleteRefs.current.forEach((athleteRef) => {
+            athleteRef.stop();
+        });
+    }
+
+    const resetAll = () => {
+        athleteRefs.current.forEach((athleteRef) => {
+            athleteRef.reset();
+        });
+    }
+
+    // const shareText = async (text) => {
+    //     await Sharing.shareAsync(text);
+    // };
+
+    const shareText = async (text) => {
+        // try {
+        //   await Sharing.shareAsync({ message: text });
+        // } catch (error) {
+        //   console.log('Sharing failed with error:', error);
+        // }
+
+        try {
+            const result = await Share.share({
+                message:
+                    text,
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            Alert.alert(error.message);
+        }
+    };
+
+    const share = () => {
+        let result = '';
+        // console.log(athleteRefs);
+        athleteRefs.current.forEach((athleteRef) => {
+            result += athleteRef.getAllTimes();
+        });
+        // Alert.alert(result);
+        shareText(result);
+    }
 
     return (
         <View style={styles.container}>
-            <View>
-                <Text style={styles.heading}>IntervalMaster</Text>
+            <View style={styles.topBar}>
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={styles.headingText}>IntervalMaster</Text>
+                    <Text style={styles.headingMiniText}>Some random text</Text>
+                </View>
+                {/* <Entypo name="plus" size={24} color="grey" /> */}
+                <TouchableOpacity onPress={() => { Alert.alert("Menu") }}>
+                    <Feather name="menu" size={24} color="white" />
+                </TouchableOpacity>
             </View>
 
             <View style={[styles.mainWhiteContainer, styles.shadow]}>
 
-                <View style={styles.timeTitle}>
+                {/* <View style={styles.timeTitle}>
                     <Text><Text style={styles.textBold}>Time </Text>Lap/Int.</Text>
+                </View> */}
+
+
+                <View style={{width: '95%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 5, paddingHorizontal: 15,
+                }}>
+                    <View><FontAwesome5 name="running" size={24} color="transparent" /></View>
+                    <Text style={styles.text}>Name</Text>
+                    <Text style={[styles.textBold, styles.text, { color: '#0094C6' }]}>
+                        Time
+                    </Text>
+                    <Text>Lap/Int.</Text>
+                    <View style={{width: 150, flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <Text>Controls</Text>
+                    </View>
                 </View>
 
-                {data.map((item, index) => (
-                    <TouchableHighlight underlayColor='trasnparent' onPress={() => {
-                        // toggleDescriptionVisible(index);
-                        setData(data.map((item, i) => {
-                            if (i === index) {
-                                item.descriptionVisible = !item.descriptionVisible;
-                            }
-                            return item;
-                        }));
-                    }}>
-                        <Athlete data={item} key={index} />
-                    </TouchableHighlight>
-                ))}
+                {/* 
+                {names.map((item, index) => (
+                     */}
+                <Athlete name={"Athlete 1"} ref={(ref) => (athleteRefs.current[0] = ref)} />
+                <Athlete name={"Athlete 2"} ref={(ref) => (athleteRefs.current[1] = ref)} />
+                <Athlete name={"Athlete 3"} ref={(ref) => (athleteRefs.current[2] = ref)} />
 
-            <View style={styles.threeButtonsContainer}>
-                    <TouchableOpacity style={[styles.button, styles.shadow, {backgroundColor: '#9E9E9E'}]} onPress={() => Alert.alert('Start')}>
+                <TouchableOpacity style={styles.addAthlete} onPress={() => Alert.alert('Add Athlete')}>
+                    <View>
+                        <Entypo name="plus" size={24} color="grey" />
+                    </View>
+                    <Text style={[styles.buttonText, { color: 'grey', marginLeft: 15, fontWeight: 'normal', fontSize: 15 }]}>Add Athlete</Text>
+                </TouchableOpacity>
+                {/* ))} */}
+
+                <View style={styles.threeButtonsContainer}>
+                    <TouchableOpacity style={[styles.button, styles.shadow, { backgroundColor: '#9E9E9E' }]} onPress={() => resetAll()}>
                         {/* background color grey */}
                         <Text style={styles.buttonText}>ResetAll</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => Alert.alert('Lap')}>
+                    <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => startAll()}>
                         <Text style={styles.buttonText}>StartAll</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => Alert.alert('Stop')}>
+                    <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => stopAll()}>
                         <Text style={styles.buttonText}>Stop All</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => share()}>
+                        <Text style={styles.buttonText}>Share</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -65,13 +162,35 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     timeTitle: {
+        width: '100%',
+        paddingLeft: 120
+    },
+    topBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        marginTop: 60,
+        marginBottom: 30,
+        marginHorizontal: 20,
+    },
+    addAthlete: {
+        width: '93%',
+        flexDirection: 'row',
+        // justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 70,
+        // backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 5,
+        paddingHorizontal: 15,
+        marginTop: 10,
+        // marginBottom: 10,
     },
     mainWhiteContainer: {
         backgroundColor: '#F5F5F5',
         width: '100%',
         flex: 1,
-        // alignItems: 'center',
+        alignItems: 'center',
         // justifyContent: 'center',
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
@@ -91,14 +210,16 @@ const styles = StyleSheet.create({
             height: 0,
         },
     },
-    heading: {
+    headingText: {
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'left',
         color: '#fff',
-        marginTop: 60,
-        marginBottom: 30,
-        marginLeft: 20,
+    },
+    headingMiniText: {
+        fontSize: 8,
+        textAlign: 'left',
+        color: '#fff',
     },
     threeButtonsContainer: {
         flexDirection: 'row',
@@ -113,12 +234,12 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         margin: 2,
-        
+
     },
     buttonText: {
         fontSize: 18,
         color: '#fff',
         fontWeight: 'bold',
     },
-        
+
 });
