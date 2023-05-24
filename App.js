@@ -1,9 +1,10 @@
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, { Component, useState, useEffect, useRef, Profiler } from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert, Share } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
 import * as Sharing from 'expo-sharing';
 // TODO: only import one part of sharing
+// Disabel button
 import Athlete from './src/components/Athlete';
 
 export default function App() {
@@ -83,6 +84,26 @@ export default function App() {
         shareText(result);
     }
 
+    let renderCount = 0;
+    const onRender = (id, phase, actualDuration, baseDuration, startTime, commitTime) => {
+        // Aggregate or log render timings...
+        // console.log(actualDuration);
+        renderCount++;
+    }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            // Log the rendering frequency per second
+            console.log(`Rendering frequency: ${renderCount} renders per second`);
+            // Reset the render count
+            renderCount = 0;
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
     return (
         <View style={styles.container}>
             <View style={styles.topBar}>
@@ -103,7 +124,8 @@ export default function App() {
                 </View> */}
 
 
-                <View style={{width: '95%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 5, paddingHorizontal: 15,
+                <View style={{
+                    width: '95%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 5, paddingHorizontal: 15,
                 }}>
                     <View><FontAwesome5 name="running" size={24} color="transparent" /></View>
                     <Text style={styles.text}>Name</Text>
@@ -111,17 +133,23 @@ export default function App() {
                         Time
                     </Text>
                     <Text>Lap/Int.</Text>
-                    <View style={{width: 150, flexDirection: 'row', justifyContent: 'space-around'}}>
-                    <Text>Controls</Text>
+                    <View style={{ width: 170, flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <Text>Controls</Text>
                     </View>
                 </View>
 
                 {/* 
                 {names.map((item, index) => (
                      */}
-                <Athlete name={"Athlete 1"} ref={(ref) => (athleteRefs.current[0] = ref)} />
-                <Athlete name={"Athlete 2"} ref={(ref) => (athleteRefs.current[1] = ref)} />
-                <Athlete name={"Athlete 3"} ref={(ref) => (athleteRefs.current[2] = ref)} />
+                <Profiler id="Athlete1" onRender={onRender}>
+                    <Athlete name={"Athlete 1"} ref={(ref) => (athleteRefs.current[0] = ref)} />
+                </Profiler>
+                <Profiler id="Athlete1" onRender={onRender}>
+                    <Athlete name={"Athlete 2"} ref={(ref) => (athleteRefs.current[1] = ref)} />
+                </Profiler>
+                <Profiler id="Athlete1" onRender={onRender}>
+                    <Athlete name={"Athlete 3"} ref={(ref) => (athleteRefs.current[2] = ref)} />
+                </Profiler>
 
                 <TouchableOpacity style={styles.addAthlete} onPress={() => Alert.alert('Add Athlete')}>
                     <View>

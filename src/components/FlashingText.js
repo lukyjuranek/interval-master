@@ -23,13 +23,13 @@ const formatTime = (time, decimalPlaces) => {
     return result;
 }
 
-const FlashingText = ({ isRunning, currentTime, startTime, stopTime }) => {
+const FlashingText = ({ isRunning, currentTime, startTime, stopTime, firstStartEver }) => {
     const [isFlashing, setIsFlashing] = useState(false);
 
     useEffect(() => {
         let interval;
 
-        if (!isRunning && stopTime != startTime) {
+        if (!isRunning && stopTime != startTime && !firstStartEver) {
             interval = setInterval(() => {
                 setIsFlashing((prevIsFlashing) => !prevIsFlashing);
             }, 500); // Interval time for flashing (in milliseconds)
@@ -39,7 +39,7 @@ const FlashingText = ({ isRunning, currentTime, startTime, stopTime }) => {
             clearInterval(interval);
             setIsFlashing(false);
         };
-    }, [isRunning]);
+    }, [isRunning, firstStartEver]);
 
     const textStyles = [
         styles.textBold,
@@ -54,7 +54,7 @@ const FlashingText = ({ isRunning, currentTime, startTime, stopTime }) => {
                 ? formatTime(currentTime - startTime, 1)
                 : formatTime(stopTime - startTime, 1)}
         </Text>
-        
+
     );
 };
 
