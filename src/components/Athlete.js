@@ -248,38 +248,9 @@ const Athlete = React.forwardRef((props, ref) => {
                                     {/* </View> */}
                                 </View>
                             ))}
-<<<<<<< HEAD
                         </View>
                     ))}
                     
-=======
-                        </View>
-                    ))}
-                    {/* <View style={styles.detailsPanelLineOfText}>
-                            <Text style={[styles.text, styles.textBold]}>Interval 1</Text>
-                            <Text style={[styles.text, styles.textBold]}>2:07.8</Text>
-                        </View>
-                        <View style={styles.detailsPanelLineOfText}>
-                            <Text style={[styles.text, styles.lap]}>Lap 1</Text>
-                            <Text style={styles.text}>2:07.8</Text>
-                            </View>
-                        <View style={styles.detailsPanelLineOfText}>
-                        <Text style={[styles.text, styles.lap]}>Lap 2</Text>
-                        <Text style={styles.text}>2:07.8</Text>
-                        </View>
-                        <View style={styles.detailsPanelLineOfText}>
-                        <Text style={[styles.text, styles.textBold]}>Interval 1</Text>
-                            <Text style={[styles.text, styles.textBold]}>2:07.8</Text>
-                        </View>
-                        <View style={styles.detailsPanelLineOfText}>
-                            <Text style={[styles.text, styles.lap]}>Lap 1</Text>
-                            <Text style={styles.text}>2:07.8</Text>
-                        </View>
-                        <View style={styles.detailsPanelLineOfText}>
-                            <Text style={[styles.text, styles.lap]}>Lap 2</Text>
-                            <Text style={styles.text}>2:07.8</Text>
-                        </View> */}
->>>>>>> d19a4458cdd744e5c32e1087aca52f725ab276bc
                     <View style={styles.threeButtonsContainer}>
                         <TouchableOpacity style={[styles.button]} onPress={() => reset()}>
                             <Text style={styles.buttonText}>Reset</Text>
