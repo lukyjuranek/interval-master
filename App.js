@@ -171,7 +171,8 @@ export default function App() {
                         <Text style={styles.buttonText}>Stop All</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => share()}>
-                        <Text style={styles.buttonText}>Share</Text>
+                        {/* <Text style={styles.buttonText}>Share</Text> */}
+                        <Entypo name="share" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
 

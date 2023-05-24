@@ -231,6 +231,7 @@ const Athlete = React.forwardRef((props, ref) => {
                 </View>
             </TouchableHighlight>
             {/* </View> */}
+            <View style={{flexDirection: 'row', marginTop: -1, zIndex: -1,}}>
             {descriptionVisible &&
                 <View style={[styles.detailsPanel, styles.shadow]}>
                     {storedIntTimes.map((item, index) => (
@@ -251,7 +252,7 @@ const Athlete = React.forwardRef((props, ref) => {
                         </View>
                     ))}
                     
-                    <View style={styles.threeButtonsContainer}>
+                    <View style={styles.descriptionButtonsContainer}>
                         <TouchableOpacity style={[styles.button]} onPress={() => reset()}>
                             <Text style={styles.buttonText}>Reset</Text>
                         </TouchableOpacity>
@@ -264,6 +265,7 @@ const Athlete = React.forwardRef((props, ref) => {
                         </TouchableOpacity> */}
                 </View>
             }
+            </View>
 
         </View>
 
@@ -302,8 +304,8 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
-        marginTop: -1,
-        zIndex: -1,
+        // marginTop: -1,
+        // zIndex: -1,
     },
     detailsPanelLineOfText: {
         flexDirection: 'row',
@@ -315,6 +317,10 @@ const styles = StyleSheet.create({
     },
     threeButtonsContainer: {
         flexDirection: 'row',
+    },
+    descriptionButtonsContainer: {
+        flexDirection: 'row',
+        marginTop: 20,
     },
     button: {
         backgroundColor: '#F5F5F5',
