@@ -6,6 +6,7 @@ import * as Sharing from 'expo-sharing';
 // TODO: only import one part of sharing
 // Disabel button
 import Athlete from './Athlete';
+import { add } from 'react-native-reanimated';
 var bg_img = require('./../img/blue-gradient-bg.png');
 
 const MainScreen = ({ navigation }) => {
@@ -26,36 +27,33 @@ const MainScreen = ({ navigation }) => {
 
     // Lets us access the Athlete components methods to start all timers at once for instance
     const athleteRefs = useRef([]);
+    const [athletes, setAthletes] = useState([]);
 
     const startAll = () => {
         athleteRefs.current.forEach((athleteRef) => {
-            athleteRef.start();
+            if (athleteRef && athleteRef.start) {
+                athleteRef.start();
+            }
         });
     }
 
     const stopAll = () => {
         athleteRefs.current.forEach((athleteRef) => {
-            athleteRef.stop();
+            if (athleteRef && athleteRef.stop) {
+                athleteRef.stop();
+            }
         });
     }
 
     const resetAll = () => {
         athleteRefs.current.forEach((athleteRef) => {
-            athleteRef.reset();
+            if (athleteRef && athleteRef.reset) {
+                athleteRef.reset();
+            }
         });
     }
 
-    // const shareText = async (text) => {
-    //     await Sharing.shareAsync(text);
-    // };
-
     const shareText = async (text) => {
-        // try {
-        //   await Sharing.shareAsync({ message: text });
-        // } catch (error) {
-        //   console.log('Sharing failed with error:', error);
-        // }
-
         try {
             const result = await Share.share({
                 message:
@@ -92,13 +90,36 @@ const MainScreen = ({ navigation }) => {
         renderCount++;
     }
 
+    const addAthlete = () => {
+        setAthletes(prevAthletes => [...prevAthletes, { name: 'Athlete ' + (prevAthletes.length + 1), id: Math.random() }]);
+    };
+
+    const removeAthlete = (id) => {
+        setAthletes(prevAthletes => {
+            const updatedAthletes = [...prevAthletes];
+            for (let i = 0; i < updatedAthletes.length; i++) {
+                if (updatedAthletes[i].id == id) {
+                    updatedAthletes.splice(i, 1);
+                    athleteRefs.current.splice(i, 1);
+                    break;
+                }
+            }
+            return updatedAthletes;
+        });
+    };
+
     useEffect(() => {
         const interval = setInterval(() => {
             // Log the rendering frequency per second
             console.log(`Rendering frequency: ${renderCount} renders per second`);
+            // console.log(athletes);
+            // console.log(athleteRefs);
             // Reset the render count
             renderCount = 0;
         }, 1000);
+
+        addAthlete();
+        addAthlete();
 
         return () => {
             clearInterval(interval);
@@ -138,20 +159,19 @@ const MainScreen = ({ navigation }) => {
                         </View>
                     </View>
 
-                    {/* 
-                {names.map((item, index) => (
-                     */}
-                    <Profiler id="Athlete1" onRender={onRender}>
-                        <Athlete name={"Athlete 1"} ref={(ref) => (athleteRefs.current[0] = ref)} />
-                    </Profiler>
-                    <Profiler id="Athlete1" onRender={onRender}>
-                        <Athlete name={"Athlete 2"} ref={(ref) => (athleteRefs.current[1] = ref)} />
-                    </Profiler>
-                    <Profiler id="Athlete1" onRender={onRender}>
-                        <Athlete name={"Athlete 3"} ref={(ref) => (athleteRefs.current[2] = ref)} />
-                    </Profiler>
+                    {athletes.map((athlete, index) => (
+                        // <Profiler key={`athlete-${index}`} id={`Athlete${index + 1}`} onRender={onRender}>
+                        <Athlete
+                            key={athlete.id}
+                            id={athlete.id}
+                            name={athlete.name}
+                            ref={ref => (athleteRefs.current[index] = ref)}
+                            removeAthlete={removeAthlete}
+                        />
+                        // </Profiler>
+                    ))}
 
-                    <TouchableOpacity style={styles.addAthlete} onPress={() => Alert.alert('Add Athlete')}>
+                    <TouchableOpacity style={styles.addAthlete} onPress={addAthlete}>
                         <View>
                             <Entypo name="plus" size={24} color="grey" />
                         </View>
@@ -166,7 +186,7 @@ const MainScreen = ({ navigation }) => {
                             <Feather name="trash" size={20} color="white" />
                             {/* </Text> */}
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, styles.shadow, { backgroundColor: '#9E9E9E'}]} onPress={() => share()}>
+                        <TouchableOpacity style={[styles.button, styles.shadow, { backgroundColor: '#9E9E9E' }]} onPress={() => share()}>
                             {/* <Text style={styles.buttonText}>Share</Text> */}
                             <Entypo name="share" size={24} color="white" />
                         </TouchableOpacity>

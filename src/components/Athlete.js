@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import FlashingText from './FlashingText';
+import { color } from 'react-native-reanimated';
 
 const getCurrentTime = () => {
     const now = new Date().getTime();
@@ -83,6 +84,10 @@ const Athlete = React.forwardRef((props, ref) => {
         });
     }
 
+    const handleRemoveAthlete = () => {
+        props.removeAthlete(props.id);
+    }
+
     const start = () => {
         if (!isRunning) {
             setStartTime(getCurrentTime());
@@ -105,7 +110,7 @@ const Athlete = React.forwardRef((props, ref) => {
             setIntervalId(setInterval(() => {
                 setCurrentTime(new Date().getTime());
             }, 100));
-            console.log("Lap"+storedLapTimes);
+            console.log("Lap" + storedLapTimes);
 
         }
     }
@@ -130,7 +135,7 @@ const Athlete = React.forwardRef((props, ref) => {
 
             setStoredIntTimes([...storedIntTimes, stopTime]);
             // console.log("Int"+storedIntTimes);
-            console.log("Lap"+storedLapTimes);
+            console.log("Lap" + storedLapTimes);
         }
     }
 
@@ -186,14 +191,14 @@ const Athlete = React.forwardRef((props, ref) => {
     return (
         <View style={styles.container}>
             {/* <View> */}
-            <TouchableHighlight style={{flexDirection: 'row'}} underlayColor='transparent' onPress={() => {
+            <TouchableHighlight style={{ flexDirection: 'row' }} underlayColor='transparent' onPress={() => {
                 // toggles the descriptionVisible state
                 setDescriptionVisible(!descriptionVisible);
             }}>
                 <View style={[styles.athlete, styles.shadow]}>
 
                     <View><FontAwesome5 name="running" size={24} color="black" /></View>
-                    <View><Text style={styles.text}>{name}{isRunning ? intervalNumber : ""}</Text></View>
+                    <View><Text style={styles.text}>{name}</Text></View>
                     <View>
                         <Text style={[styles.textBold, styles.text, { color: '#0094C6' }]}>
                             {/* {isRunning ? formatTime(currentTime - startTime) : formatTime(stopTime - startTime)} */}
@@ -231,40 +236,45 @@ const Athlete = React.forwardRef((props, ref) => {
                 </View>
             </TouchableHighlight>
             {/* </View> */}
-            <View style={{flexDirection: 'row', marginTop: -1, zIndex: -1,}}>
-            {descriptionVisible &&
-                <View style={[styles.detailsPanel, styles.shadow]}>
-                    {storedIntTimes.map((item, index) => (
-                        <View style={[{ flexDirection: 'column' }]}>
-                            <View style={styles.detailsPanelLineOfText}>
-                                <Text style={[styles.text, styles.textBold]}>Interval {index + 1}</Text>
-                                <Text style={[styles.text, styles.textBold]}>{formatTime(item, 1)}</Text>
-                            </View>
-                            {/* <Text>{storedLapTimes[index][0]}</Text> */}
-                            {storedLapTimes[index] && storedLapTimes[index].map((lapItem, lapIndex) => (
+            <View style={{ flexDirection: 'row', marginTop: -1, zIndex: -1, }}>
+                {descriptionVisible &&
+                    <View style={[styles.detailsPanel, styles.shadow]}>
+                        {storedIntTimes.map((item, index) => (
+                            <View style={[{ flexDirection: 'column' }]}>
                                 <View style={styles.detailsPanelLineOfText}>
-                                    {/* <View style={[{ flexDirection: 'column' }]}> */}
-                                    <Text style={[styles.text, styles.lap]}>Lap {lapIndex + 1}</Text>
-                                    <Text style={styles.text}>{formatTime(lapItem, 1)}</Text>
-                                    {/* </View> */}
+                                    <Text style={[styles.text, styles.textBold]}>Interval {index + 1}</Text>
+                                    <Text style={[styles.text, styles.textBold]}>{formatTime(item, 1)}</Text>
                                 </View>
-                            ))}
+                                {/* <Text>{storedLapTimes[index][0]}</Text> */}
+                                {storedLapTimes[index] && storedLapTimes[index].map((lapItem, lapIndex) => (
+                                    <View style={styles.detailsPanelLineOfText}>
+                                        {/* <View style={[{ flexDirection: 'column' }]}> */}
+                                        <Text style={[styles.text, styles.lap]}>Lap {lapIndex + 1}</Text>
+                                        <Text style={styles.text}>{formatTime(lapItem, 1)}</Text>
+                                        {/* </View> */}
+                                    </View>
+                                ))}
+                            </View>
+                        ))}
+
+                        <View style={styles.descriptionButtonsContainer}>
+                            <TouchableOpacity style={[styles.descriptionButton, { backgroundColor: '#f06c6c' }]}
+                            onPress={handleRemoveAthlete}
+                            >
+                                <Text style={[styles.buttonText, {color: 'white'}]}>Remove</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.descriptionButton]} onPress={() => reset()}>
+                                <Text style={styles.buttonText}>Reset</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.descriptionButton]} onPress={() => reset()}>
+                                <Text style={styles.buttonText}>Rename</Text>
+                            </TouchableOpacity>
                         </View>
-                    ))}
-                    
-                    <View style={styles.descriptionButtonsContainer}>
-                        <TouchableOpacity style={[styles.button]} onPress={() => reset()}>
-                            <Text style={styles.buttonText}>Reset</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button]} onPress={() => reset()}>
-                            <Text style={styles.buttonText}>Rename</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {/* <TouchableOpacity style={styles.button} onPress={() => remove()}>
+                        {/* <TouchableOpacity style={styles.button} onPress={() => remove()}>
                             <Text style={styles.buttonText}>Remove</Text>
                         </TouchableOpacity> */}
-                </View>
-            }
+                    </View>
+                }
             </View>
 
         </View>
@@ -320,16 +330,26 @@ const styles = StyleSheet.create({
     },
     descriptionButtonsContainer: {
         flexDirection: 'row',
+        justifyContent: 'center',
         marginTop: 20,
+    },
+    descriptionButton: {
+        backgroundColor: '#F5F5F5',
+        borderRadius: 30,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        margin: 2,
+        marginRight: 5,
     },
     button: {
         backgroundColor: '#F5F5F5',
         borderRadius: 30,
         padding: 10,
         margin: 2,
+        marginRight: 5,
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 12,
         color: '#000000',
         // fontWeight: 'bold',
     },
