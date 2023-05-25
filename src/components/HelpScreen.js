@@ -2,11 +2,10 @@ import React, { Component, useState, useEffect, useRef, Profiler } from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert, Share, Switch, ImageBackground } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Entypo, Feather, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import * as Sharing from 'expo-sharing';
 
 var bg_img = require('./../img/gray-gradient-bg.png');
 
-const SettingsScreen = ({ navigation }) => {
+const HelpScreen = ({ navigation }) => {
 
     const [resetOnRestart, setResetOnRestart] = useState(false);
     const [keepScreenOn, setKeepScreenOn] = useState(true)
@@ -26,53 +25,10 @@ const SettingsScreen = ({ navigation }) => {
                 </View>
 
                 <View style={[styles.mainWhiteContainer, styles.shadow]}>
-                    <Text style={styles.settingsHeading}>Settings</Text>
-
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('hi')}>
-                        <Text style={styles.settingsLineText}>Reset on app restart</Text>
-                        <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Switch
-                                onValueChange={() => setResetOnRestart((previousState) => !previousState)}
-                                value={resetOnRestart}
-                                thumbColor={resetOnRestart ? '#014795' : '#f4f3f4'}
-                                trackColor={{ false: '#767577', true: '#4d75b3' }}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('hi')}>
-                        <Text style={styles.settingsLineText}>Keep screen on</Text>
-                        <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Switch
-                                onValueChange={() => setKeepScreenOn((previousState) => !previousState)}
-                                value={keepScreenOn}
-                                thumbColor={keepScreenOn ? '#014795' : '#f4f3f4'}
-                                trackColor={{ false: '#767577', true: '#4d75b3' }}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => navigation.navigate('Help')}>
-                        <Text style={styles.settingsLineText}>How to use</Text>
-                        <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
-                            <AntDesign name="questioncircleo" size={25} color="black" />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('Go pro')}>
-                        <Text style={styles.settingsLineText}>Go pro</Text>
-                        <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
-                            <MaterialCommunityIcons name="crown-outline" size={25} color="black" />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('Rate us')}>
-                        <Text style={styles.settingsLineText}>Rate us</Text>
-                        <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
-                            <AntDesign name="right" size={25} color="black" />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('We currently only support English. More languages coming soon.')}>
-                        <Text style={styles.settingsLineText}>Language</Text>
-                        <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Text style={[styles.settingsLineText, { color: 'grey', fontSize: 15 }]}>English</Text>
-                        </View>
+                    <Text style={styles.settingsHeading}>How to use</Text>
+                    <Text style={{ marginHorizontal: 20 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec posuere tempor urna, in rutrum sapien sagittis at. Nunc ultrices pellentesque aliquet. Maecenas nec quam nec justo molestie faucibus sed sit amet orci. Phasellus a pretium ligula. Mauris imperdiet non est sit amet scelerisque. Morbi risus enim, molestie ut magna condimentum, posuere ullamcorper enim. Sed rutrum condimentum massa, tincidunt accumsan ex fringilla ut.</Text>
+                    <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => stopAll()}>
+                        <Text style={styles.buttonText}>Dismiss</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -178,6 +134,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         margin: 2,
+        position: 'absolute',
+        bottom: 15,
 
     },
     buttonText: {
@@ -188,4 +146,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default SettingsScreen;
+export default HelpScreen;

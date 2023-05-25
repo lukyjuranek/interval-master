@@ -8,8 +8,8 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#02327A"
+      "resizeMode": "contain"
+      // "backgroundColor": "#02327A"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,9 +20,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#02327A"
+        "backgroundImage": "./assets/adaptive-icon-bg.png"
+        // "backgroundColor": "#02327A"
       },
-      "versionCode": 6,
+      "versionCode": 7,
       "package": "com.lukasjuranek.intervalmaster"
     },
     "web": {

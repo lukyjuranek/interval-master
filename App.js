@@ -9,6 +9,7 @@ import * as Sharing from 'expo-sharing';
 // Imports custom components
 import MainScreen from './src/components/MainScreen';
 import SettingsScreen from './src/components/SettingsScreen';
+import HelpScreen from './src/components/HelpScreen';
 
 // Creates stack navigator
 const Stack = createNativeStackNavigator();
@@ -22,6 +23,9 @@ export default function App() {
 					headerShown: false,
 				}} />
 				< Stack.Screen name="Settings" component={SettingsScreen} options={{
+                    headerShown: false,
+				}} />
+                < Stack.Screen name="Help" component={HelpScreen} options={{
                     headerShown: false,
 				}} />
 				{/* <Stack.Screen name="Compare" component={CompareScreen} options={{
