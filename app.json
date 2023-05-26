@@ -23,7 +23,7 @@
         "backgroundImage": "./assets/adaptive-icon-bg.png"
         // "backgroundColor": "#02327A"
       },
-      "versionCode": 7,
+      "versionCode": 8,
       "package": "com.lukasjuranek.intervalmaster"
     },
     "web": {

@@ -2,9 +2,11 @@ import React, { Component, useState, useEffect, useRef, useImperativeHandle } fr
 import {
     StyleSheet, Text, View, Image, TouchableOpacity, Alert, TouchableHighlight
 } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+// import { FontAwesome5 } from '@expo/vector-icons';
 import FlashingText from './FlashingText';
+import FlashingIcon from './FlashingIcon';
 import { color } from 'react-native-reanimated';
+import prompt from 'react-native-prompt-android';
 
 const getCurrentTime = () => {
     const now = new Date().getTime();
@@ -88,6 +90,35 @@ const Athlete = React.forwardRef((props, ref) => {
         props.removeAthlete(props.id);
     }
 
+    const handleRename = async () => {
+        // try {
+            
+            prompt(
+                'Enter password',
+                'Enter your password',
+                [
+                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                 {text: 'OK', onPress: text => props.renameAthlete(props.id, text)},
+                ],
+                {
+                    type: 'secure-text',
+                    cancelable: false,
+                    defaultValue: 'test',
+                    placeholder: 'placeholder'
+                }
+            );
+        //   props.renameAthlete(props.id, text);
+        // } catch (error) {
+        //   console.error('Prompt error:', error);
+        // }
+        // Alert.prompt("Rename athlete", "Enter a new name"), (text) => {
+        //     props.renameAthlete(props.id, text);
+        // }, 'plain-text', // Optional input type (default is 'plain-text')
+        // '', // Optional default value
+        // 'default' // Optional keyboard type (default is 'default'))
+        
+    }
+
     const start = () => {
         if (!isRunning) {
             setStartTime(getCurrentTime());
@@ -129,13 +160,11 @@ const Athlete = React.forwardRef((props, ref) => {
             setBreakTime(getCurrentTime());
             setStopTime(getCurrentTime());
             setIsRunning(false);
-            // reset lap time
+            // resets lap time
             setLapTime(getCurrentTime());
             setPreviousLapTime(getCurrentTime());
 
             setStoredIntTimes([...storedIntTimes, stopTime]);
-            // console.log("Int"+storedIntTimes);
-            console.log("Lap" + storedLapTimes);
         }
     }
 
@@ -165,23 +194,23 @@ const Athlete = React.forwardRef((props, ref) => {
 
     const getAllTimes = () => {
         // Returns all interval times and lap times as a simple string so we can share it as a text message
-
         let result = name + "\n";
-        result += storedIntTimes.map((intTime, index) => {
-            const intervalText = `Int ${index + 1}:\t\t\t\t${formatTime(intTime, 1)}`;
-            const lapTimesText = storedLapTimes[index]
-                .map((lapTime, lapIndex) => `\tLap ${lapIndex + 1}:\t\t\t\t${formatTime(lapTime, 1)}`)
-                .join('\n');
+        try {
+            result += storedIntTimes.map((intTime, index) => {
+                const intervalText = `Int ${index + 1}:\t\t\t\t${formatTime(intTime, 1)}`;
+                const lapTimesText = storedLapTimes[index]
+                    .map((lapTime, lapIndex) => `\tLap ${lapIndex + 1}:\t\t\t\t${formatTime(lapTime, 1)}`)
+                    .join('\n');
 
-            return `${intervalText}\n${lapTimesText}`;
-        }).join('\n');
-        result += "\n"
-        return result;
+                return `${intervalText}\n${lapTimesText}`;
+            }).join('\n');
+            result += "\n"
+            return result;
+        } catch (error) {
+            console.log(error);
+            return "";
+        }
     }
-
-    // const remove = () => {
-
-    // }
 
     // Expose the start method to the parent component
     useImperativeHandle(ref, () => ({
@@ -197,7 +226,14 @@ const Athlete = React.forwardRef((props, ref) => {
             }}>
                 <View style={[styles.athlete, styles.shadow]}>
 
-                    <View><FontAwesome5 name="running" size={24} color="black" /></View>
+                    {/* <View><FontAwesome5 name="running" size={24} color="black" /></View> */}
+                    <FlashingIcon
+                        isRunning={isRunning}
+                        isFlashing={props.isFlashing}
+                        // currentTime={currentTime}
+                        // startTime={startTime}
+                        // stopTime={stopTime}
+                    />
                     <View><Text style={styles.text}>{name}</Text></View>
                     <View>
                         <Text style={[styles.textBold, styles.text, { color: '#0094C6' }]}>
@@ -214,9 +250,11 @@ const Athlete = React.forwardRef((props, ref) => {
 
 
                     {isRunning ? (
-                        <Text style={styles.text}>{formatTime(lapTime - previousLapTime, 1)}</Text>
+                        <View style={{ width: 35, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={styles.text}>{formatTime(lapTime - previousLapTime, 1)}</Text>
+                        </View>
                     ) : (
-                        <View>
+                        <View style={{ width: 35, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={styles.text}>{formatTime(currentTime - breakTime, 2)}</Text>
                             <Text style={styles.text}>{formatTime(currentTime - startTime, 2)}</Text>
                         </View>
@@ -259,14 +297,14 @@ const Athlete = React.forwardRef((props, ref) => {
 
                         <View style={styles.descriptionButtonsContainer}>
                             <TouchableOpacity style={[styles.descriptionButton, { backgroundColor: '#f06c6c' }]}
-                            onPress={handleRemoveAthlete}
+                                onPress={handleRemoveAthlete}
                             >
-                                <Text style={[styles.buttonText, {color: 'white'}]}>Remove</Text>
+                                <Text style={[styles.buttonText, { color: 'white' }]}>Remove</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.descriptionButton]} onPress={() => reset()}>
                                 <Text style={styles.buttonText}>Reset</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.descriptionButton]} onPress={() => reset()}>
+                            <TouchableOpacity style={[styles.descriptionButton]} onPress={handleRename}>
                                 <Text style={styles.buttonText}>Rename</Text>
                             </TouchableOpacity>
                         </View>
@@ -337,7 +375,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
         borderRadius: 30,
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         margin: 2,
         marginRight: 5,
     },

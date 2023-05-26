@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect, useRef, Profiler } from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert, Share, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert, Share, ImageBackground, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
 import * as Sharing from 'expo-sharing';
@@ -28,6 +28,7 @@ const MainScreen = ({ navigation }) => {
     // Lets us access the Athlete components methods to start all timers at once for instance
     const athleteRefs = useRef([]);
     const [athletes, setAthletes] = useState([]);
+    const [isFlashing, setIsFlashing] = useState(false);
 
     const startAll = () => {
         athleteRefs.current.forEach((athleteRef) => {
@@ -94,6 +95,19 @@ const MainScreen = ({ navigation }) => {
         setAthletes(prevAthletes => [...prevAthletes, { name: 'Athlete ' + (prevAthletes.length + 1), id: Math.random() }]);
     };
 
+    const renameAthlete = (id, newName) => {
+        setAthletes(prevAthletes => {
+            const updatedAthletes = [...prevAthletes];
+            for (let i = 0; i < updatedAthletes.length; i++) {
+                if (updatedAthletes[i].id == id) {
+                    updatedAthletes[i].name = newName;
+                    break;
+                }
+            }
+            return updatedAthletes;
+        });
+    };
+
     const removeAthlete = (id) => {
         setAthletes(prevAthletes => {
             const updatedAthletes = [...prevAthletes];
@@ -108,21 +122,26 @@ const MainScreen = ({ navigation }) => {
         });
     };
 
+    const intervalRef = useRef(null);
     useEffect(() => {
-        const interval = setInterval(() => {
-            // Log the rendering frequency per second
-            console.log(`Rendering frequency: ${renderCount} renders per second`);
-            // console.log(athletes);
-            // console.log(athleteRefs);
-            // Reset the render count
-            renderCount = 0;
+        // const interval = setInterval(() => {
+        //     // Log the rendering frequency per second
+        //     console.log(`Rendering frequency: ${renderCount} renders per second`);
+        //     // console.log(athletes);
+        //     // console.log(athleteRefs);
+        //     // Reset the render count
+        //     renderCount = 0;
+        // }, 1000);
+
+        intervalRef.current = setInterval(() => {
+            setIsFlashing((prevIsFlashing) => !prevIsFlashing);
         }, 1000);
 
         addAthlete();
         addAthlete();
 
         return () => {
-            clearInterval(interval);
+            clearInterval(intervalRef.current);
         };
     }, []);
 
@@ -158,25 +177,28 @@ const MainScreen = ({ navigation }) => {
                             <Text style={styles.timeTitleText}>Controls</Text>
                         </View>
                     </View>
-
+                    <ScrollView style={{flex: 1}} overScrollMode='never'>
                     {athletes.map((athlete, index) => (
                         // <Profiler key={`athlete-${index}`} id={`Athlete${index + 1}`} onRender={onRender}>
-                        <Athlete
-                            key={athlete.id}
-                            id={athlete.id}
-                            name={athlete.name}
-                            ref={ref => (athleteRefs.current[index] = ref)}
-                            removeAthlete={removeAthlete}
-                        />
+                            <Athlete
+                                key={athlete.id}
+                                id={athlete.id}
+                                name={athlete.name}
+                                ref={ref => (athleteRefs.current[index] = ref)}
+                                removeAthlete={removeAthlete}
+                                renameAthlete={renameAthlete}
+                                isFlashing={isFlashing}
+                            />
                         // </Profiler>
                     ))}
-
                     <TouchableOpacity style={styles.addAthlete} onPress={addAthlete}>
                         <View>
                             <Entypo name="plus" size={24} color="grey" />
                         </View>
                         <Text style={[styles.buttonText, { color: 'grey', marginLeft: 15, fontWeight: 'normal', fontSize: 15 }]}>Add Athlete</Text>
                     </TouchableOpacity>
+                    <View style={{ height: 150 }}></View>
+                    </ScrollView>
                     {/* ))} */}
 
                     <View style={styles.threeButtonsContainer}>
