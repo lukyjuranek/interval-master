@@ -24,23 +24,6 @@ const formatTime = (time, decimalPlaces) => {
 }
 
 const FlashingText = (props) => {
-    // const [isFlashing, setIsFlashing] = useState(false);
-
-    // useEffect(() => {
-    //     let interval;
-
-    //     if (!isRunning && stopTime != startTime && !firstStartEver) {
-    //         interval = setInterval(() => {
-    //             setIsFlashing((prevIsFlashing) => !prevIsFlashing);
-    //         }, 500); // Interval time for flashing (in milliseconds)
-    //     }
-
-    //     return () => {
-    //         clearInterval(interval);
-    //         setIsFlashing(false);
-    //     };
-    // }, [isRunning, firstStartEver]);
-
     const textStyles = [
         styles.textBold,
         styles.text,

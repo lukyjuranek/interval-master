@@ -1,32 +1,17 @@
 import React, { Component, useState, useEffect, useRef, Profiler } from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert, Share, ImageBackground, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Share, ImageBackground, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
 import * as Sharing from 'expo-sharing';
 // TODO: only import one part of sharing
-// Disabel button
+// Disable button
 import Athlete from './Athlete';
 import RenameDialog from './RenameDialog';
-import { add } from 'react-native-reanimated';
 var bg_img = require('./../img/blue-gradient-bg.png');
 
 const MainScreen = ({ navigation }) => {
 
-    // const names = ['Athlete 1', 'Lukas', 'Athlete 3'];
-    // const [currentTime, setCurrentTime] = useState(new Date().getTime());
-
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         setCurrentTime(new Date().getTime());
-    //     }, 100);
-
-    //     return () => {
-    //         clearInterval(interval); // Clear the interval when the component is unmounted
-    //     };
-    // }, []); // Empty dependency array ensures the effect runs only once
-
-
-    // Lets us access the Athlete components methods to start all timers at once for instance
+    // Lets us access the <Athlete /> components methods to start all timers at once for instance
     const athleteRefs = useRef([]);
     const [athletes, setAthletes] = useState([]);
     const [isFlashing, setIsFlashing] = useState(false);
@@ -73,7 +58,7 @@ const MainScreen = ({ navigation }) => {
         } catch (error) {
             Alert.alert(error.message);
         }
-    };
+    }
 
     const share = () => {
         let result = '';
@@ -94,7 +79,7 @@ const MainScreen = ({ navigation }) => {
 
     const addAthlete = () => {
         setAthletes(prevAthletes => [...prevAthletes, { name: 'Athlete ' + (prevAthletes.length + 1), id: Math.random() }]);
-    };
+    }
 
     const [isDialogVisible, setDialogVisible] = useState(false);
     const [selectedAthleteId, setSelectedAthleteId] = useState(null);
@@ -102,26 +87,16 @@ const MainScreen = ({ navigation }) => {
     const selectAthlete = (id) => {
         setSelectedAthleteId(id);
         setDialogVisible(true);
-    };
+    }
 
     const closeDialog = () => {
         setDialogVisible(false);
-    };
+    }
 
     const renameAthlete = (newName) => {
         // selectAthlete(selectedAthleteId, newName);
         console.log(selectedAthleteId);
         console.log(newName);
-        // setAthletes(prevAthletes => {
-        //             const updatedAthletes = [...prevAthletes];
-        //             for (let i = 0; i < updatedAthletes.length; i++) {
-        //                 if (updatedAthletes[i].id == selectedAthleteId) {
-        //                     updatedAthletes[i].name = newName;
-        //                     break;
-        //                 }
-        //             }
-        //             return updatedAthletes;
-        //         });
         setAthletes(prevAthletes => {
             const updatedAthletes = prevAthletes.map(athlete => {
                 if (athlete.id === selectedAthleteId) {
@@ -171,10 +146,6 @@ const MainScreen = ({ navigation }) => {
             clearInterval(intervalRef.current);
         };
     }, []);
-
-    useEffect(() => {
-        console.log(isFlashing);
-    }, [isFlashing]);
 
     return (
         <View style={styles.container}>

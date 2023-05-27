@@ -5,8 +5,6 @@ import {
 // import { FontAwesome5 } from '@expo/vector-icons';
 import FlashingText from './FlashingText';
 import FlashingIcon from './FlashingIcon';
-import { color } from 'react-native-reanimated';
-import prompt from 'react-native-prompt-android';
 
 const getCurrentTime = () => {
     const now = new Date().getTime();
@@ -42,7 +40,6 @@ const formatTime = (time, decimalPlaces) => {
 
 const Athlete = React.forwardRef((props, ref) => {
 
-    const [name, setName] = useState(props.name);
     const [startTime, setStartTime] = useState(getCurrentTime());
     const [previousLapTime, setPreviousLapTime] = useState(getCurrentTime());
     const [lapTime, setLapTime] = useState(getCurrentTime());
@@ -60,11 +57,6 @@ const Athlete = React.forwardRef((props, ref) => {
 
     const [firstStartEver, setFirstStartEver] = useState(true);
     const [intervalId, setIntervalId] = useState(0);
-
-
-    // useEffect(() => {
-    //     const inter
-    // }, []); // Empty dependency array ensures the effect runs only once
 
     // Adding an item to the nested array at index
     const addLapTime = (lapTime, index) => {
@@ -89,35 +81,6 @@ const Athlete = React.forwardRef((props, ref) => {
     const handleRemoveAthlete = () => {
         props.removeAthlete(props.id);
     }
-
-    // const handleRename = async () => {
-    //     // try {
-            
-    //         prompt(
-    //             'Rename athlete',
-    //             'Enter new name:',
-    //             [
-    //              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-    //              {text: 'OK', onPress: (text) => {props.renameAthlete(props.id, text)}},
-    //             ],
-    //             {
-    //                 type: 'secure-text',
-    //                 cancelable: false,
-    //                 defaultValue: '',
-    //                 placeholder: 'placeholder'
-    //             }
-    //         );
-    //     //   props.renameAthlete(props.id, text);
-    //     // } catch (error) {
-    //     //   console.error('Prompt error:', error);
-    //     // }
-    //     // Alert.prompt("Rename athlete", "Enter a new name"), (text) => {
-    //     //     props.renameAthlete(props.id, text);
-    //     // }, 'plain-text', // Optional input type (default is 'plain-text')
-    //     // '', // Optional default value
-    //     // 'default' // Optional keyboard type (default is 'default'))
-        
-    // }
 
     const start = () => {
         if (!isRunning) {
@@ -223,14 +186,9 @@ const Athlete = React.forwardRef((props, ref) => {
                 setDescriptionVisible(!descriptionVisible);
             }}>
                 <View style={[styles.athlete, styles.shadow]}>
-
-                    {/* <View><FontAwesome5 name="running" size={24} color="black" /></View> */}
                     <FlashingIcon
                         isRunning={isRunning}
                         isFlashing={props.isFlashing}
-                        // currentTime={currentTime}
-                        // startTime={startTime}
-                        // stopTime={stopTime}
                     />
                     <View><Text style={styles.text}>{props.name}</Text></View>
                     <View>
@@ -248,7 +206,7 @@ const Athlete = React.forwardRef((props, ref) => {
                     </View>
 
 
-                    {isRunning ? (
+                    {(isRunning || firstStartEver) ? (
                         <View style={{ width: 35, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={styles.text}>{formatTime(lapTime - previousLapTime, 1)}</Text>
                         </View>
