@@ -6,6 +6,7 @@ import * as Sharing from 'expo-sharing';
 // TODO: only import one part of sharing
 // Disabel button
 import Athlete from './Athlete';
+import RenameDialog from './RenameDialog';
 import { add } from 'react-native-reanimated';
 var bg_img = require('./../img/blue-gradient-bg.png');
 
@@ -95,18 +96,44 @@ const MainScreen = ({ navigation }) => {
         setAthletes(prevAthletes => [...prevAthletes, { name: 'Athlete ' + (prevAthletes.length + 1), id: Math.random() }]);
     };
 
-    const renameAthlete = (id, newName) => {
+    const [isDialogVisible, setDialogVisible] = useState(false);
+    const [selectedAthleteId, setSelectedAthleteId] = useState(null);
+
+    const selectAthlete = (id) => {
+        setSelectedAthleteId(id);
+        setDialogVisible(true);
+    };
+
+    const closeDialog = () => {
+        setDialogVisible(false);
+    };
+
+    const renameAthlete = (newName) => {
+        // selectAthlete(selectedAthleteId, newName);
+        console.log(selectedAthleteId);
+        console.log(newName);
+        // setAthletes(prevAthletes => {
+        //             const updatedAthletes = [...prevAthletes];
+        //             for (let i = 0; i < updatedAthletes.length; i++) {
+        //                 if (updatedAthletes[i].id == selectedAthleteId) {
+        //                     updatedAthletes[i].name = newName;
+        //                     break;
+        //                 }
+        //             }
+        //             return updatedAthletes;
+        //         });
         setAthletes(prevAthletes => {
-            const updatedAthletes = [...prevAthletes];
-            for (let i = 0; i < updatedAthletes.length; i++) {
-                if (updatedAthletes[i].id == id) {
-                    updatedAthletes[i].name = newName;
-                    break;
+            const updatedAthletes = prevAthletes.map(athlete => {
+                if (athlete.id === selectedAthleteId) {
+                    return { ...athlete, name: newName };
                 }
-            }
+                return athlete;
+            });
             return updatedAthletes;
         });
-    };
+        console.log(athletes);
+        closeDialog();
+    }
 
     const removeAthlete = (id) => {
         setAthletes(prevAthletes => {
@@ -120,7 +147,7 @@ const MainScreen = ({ navigation }) => {
             }
             return updatedAthletes;
         });
-    };
+    }
 
     const intervalRef = useRef(null);
     useEffect(() => {
@@ -137,7 +164,7 @@ const MainScreen = ({ navigation }) => {
             setIsFlashing((prevIsFlashing) => !prevIsFlashing);
         }, 1000);
 
-        addAthlete();
+        // Adds an athlete when the component mounts
         addAthlete();
 
         return () => {
@@ -145,8 +172,19 @@ const MainScreen = ({ navigation }) => {
         };
     }, []);
 
+    useEffect(() => {
+        console.log(isFlashing);
+    }, [isFlashing]);
+
     return (
         <View style={styles.container}>
+
+            <RenameDialog
+                visible={isDialogVisible}
+                onClose={closeDialog}
+                onRename={renameAthlete}
+            />
+
             <ImageBackground source={bg_img} style={styles.container} resizeMode='cover'>
                 <View style={styles.topBar}>
                     <View style={{ flexDirection: 'column' }}>
@@ -177,27 +215,27 @@ const MainScreen = ({ navigation }) => {
                             <Text style={styles.timeTitleText}>Controls</Text>
                         </View>
                     </View>
-                    <ScrollView style={{flex: 1}} overScrollMode='never'>
-                    {athletes.map((athlete, index) => (
-                        // <Profiler key={`athlete-${index}`} id={`Athlete${index + 1}`} onRender={onRender}>
+                    <ScrollView style={{ flex: 1 }} overScrollMode='never'>
+                        {athletes.map((athlete, index) => (
+                            // <Profiler key={`athlete-${index}`} id={`Athlete${index + 1}`} onRender={onRender}>
                             <Athlete
                                 key={athlete.id}
                                 id={athlete.id}
                                 name={athlete.name}
                                 ref={ref => (athleteRefs.current[index] = ref)}
                                 removeAthlete={removeAthlete}
-                                renameAthlete={renameAthlete}
+                                renameAthlete={selectAthlete}
                                 isFlashing={isFlashing}
                             />
-                        // </Profiler>
-                    ))}
-                    <TouchableOpacity style={styles.addAthlete} onPress={addAthlete}>
-                        <View>
-                            <Entypo name="plus" size={24} color="grey" />
-                        </View>
-                        <Text style={[styles.buttonText, { color: 'grey', marginLeft: 15, fontWeight: 'normal', fontSize: 15 }]}>Add Athlete</Text>
-                    </TouchableOpacity>
-                    <View style={{ height: 150 }}></View>
+                            // </Profiler>
+                        ))}
+                        <TouchableOpacity style={styles.addAthlete} onPress={addAthlete}>
+                            <View>
+                                <Entypo name="plus" size={24} color="grey" />
+                            </View>
+                            <Text style={[styles.buttonText, { color: 'grey', marginLeft: 15, fontWeight: 'normal', fontSize: 15 }]}>Add Athlete</Text>
+                        </TouchableOpacity>
+                        <View style={{ height: 150 }}></View>
                     </ScrollView>
                     {/* ))} */}
 
@@ -209,7 +247,6 @@ const MainScreen = ({ navigation }) => {
                             {/* </Text> */}
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.button, styles.shadow, { backgroundColor: '#9E9E9E' }]} onPress={() => share()}>
-                            {/* <Text style={styles.buttonText}>Share</Text> */}
                             <Entypo name="share" size={24} color="white" />
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.button, styles.shadow]} onPress={() => startAll()}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const FlashingIcon = ({ isRunning, isFlashing}) => {
+const FlashingIcon = (props) => {
     // const [isFlashing, setIsFlashing] = useState(false);
 
     // useEffect(() => {
@@ -22,7 +22,7 @@ const FlashingIcon = ({ isRunning, isFlashing}) => {
 
 
     return (
-        <View><FontAwesome5 name="running" size={20} color={(isFlashing && isRunning) ? 'white' : 'black'} /></View>
+        <View><FontAwesome5 name="running" size={20} color={(props.isFlashing && props.isRunning) ? 'white' : 'black'} /></View>
         // <Text>{isFlashing}</Text>
 
     );

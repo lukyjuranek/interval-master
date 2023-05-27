@@ -23,23 +23,23 @@ const formatTime = (time, decimalPlaces) => {
     return result;
 }
 
-const FlashingText = ({ isRunning, currentTime, startTime, stopTime, firstStartEver }) => {
-    const [isFlashing, setIsFlashing] = useState(false);
+const FlashingText = (props) => {
+    // const [isFlashing, setIsFlashing] = useState(false);
 
-    useEffect(() => {
-        let interval;
+    // useEffect(() => {
+    //     let interval;
 
-        if (!isRunning && stopTime != startTime && !firstStartEver) {
-            interval = setInterval(() => {
-                setIsFlashing((prevIsFlashing) => !prevIsFlashing);
-            }, 500); // Interval time for flashing (in milliseconds)
-        }
+    //     if (!isRunning && stopTime != startTime && !firstStartEver) {
+    //         interval = setInterval(() => {
+    //             setIsFlashing((prevIsFlashing) => !prevIsFlashing);
+    //         }, 500); // Interval time for flashing (in milliseconds)
+    //     }
 
-        return () => {
-            clearInterval(interval);
-            setIsFlashing(false);
-        };
-    }, [isRunning, firstStartEver]);
+    //     return () => {
+    //         clearInterval(interval);
+    //         setIsFlashing(false);
+    //     };
+    // }, [isRunning, firstStartEver]);
 
     const textStyles = [
         styles.textBold,
@@ -49,10 +49,10 @@ const FlashingText = ({ isRunning, currentTime, startTime, stopTime, firstStartE
     ];
 
     return (
-        <Text style={[textStyles, { color: isFlashing ? 'black' : '#0094C6' }]}>
-            {isRunning
-                ? formatTime(currentTime - startTime, 1)
-                : formatTime(stopTime - startTime, 1)}
+        <Text style={[textStyles, { color: props.isFlashing && !props.isRunning && !props.firstStartEver ? 'black' : '#0094C6' }]}>
+            {props.isRunning
+                ? formatTime(props.currentTime - props.startTime, 1)
+                : formatTime(props.stopTime - props.startTime, 1)}
         </Text>
 
     );

@@ -90,34 +90,34 @@ const Athlete = React.forwardRef((props, ref) => {
         props.removeAthlete(props.id);
     }
 
-    const handleRename = async () => {
-        // try {
+    // const handleRename = async () => {
+    //     // try {
             
-            prompt(
-                'Enter password',
-                'Enter your password',
-                [
-                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                 {text: 'OK', onPress: text => props.renameAthlete(props.id, text)},
-                ],
-                {
-                    type: 'secure-text',
-                    cancelable: false,
-                    defaultValue: 'test',
-                    placeholder: 'placeholder'
-                }
-            );
-        //   props.renameAthlete(props.id, text);
-        // } catch (error) {
-        //   console.error('Prompt error:', error);
-        // }
-        // Alert.prompt("Rename athlete", "Enter a new name"), (text) => {
-        //     props.renameAthlete(props.id, text);
-        // }, 'plain-text', // Optional input type (default is 'plain-text')
-        // '', // Optional default value
-        // 'default' // Optional keyboard type (default is 'default'))
+    //         prompt(
+    //             'Rename athlete',
+    //             'Enter new name:',
+    //             [
+    //              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+    //              {text: 'OK', onPress: (text) => {props.renameAthlete(props.id, text)}},
+    //             ],
+    //             {
+    //                 type: 'secure-text',
+    //                 cancelable: false,
+    //                 defaultValue: '',
+    //                 placeholder: 'placeholder'
+    //             }
+    //         );
+    //     //   props.renameAthlete(props.id, text);
+    //     // } catch (error) {
+    //     //   console.error('Prompt error:', error);
+    //     // }
+    //     // Alert.prompt("Rename athlete", "Enter a new name"), (text) => {
+    //     //     props.renameAthlete(props.id, text);
+    //     // }, 'plain-text', // Optional input type (default is 'plain-text')
+    //     // '', // Optional default value
+    //     // 'default' // Optional keyboard type (default is 'default'))
         
-    }
+    // }
 
     const start = () => {
         if (!isRunning) {
@@ -141,8 +141,6 @@ const Athlete = React.forwardRef((props, ref) => {
             setIntervalId(setInterval(() => {
                 setCurrentTime(new Date().getTime());
             }, 100));
-            console.log("Lap" + storedLapTimes);
-
         }
     }
 
@@ -234,12 +232,13 @@ const Athlete = React.forwardRef((props, ref) => {
                         // startTime={startTime}
                         // stopTime={stopTime}
                     />
-                    <View><Text style={styles.text}>{name}</Text></View>
+                    <View><Text style={styles.text}>{props.name}</Text></View>
                     <View>
                         <Text style={[styles.textBold, styles.text, { color: '#0094C6' }]}>
                             {/* {isRunning ? formatTime(currentTime - startTime) : formatTime(stopTime - startTime)} */}
                             <FlashingText
                                 isRunning={isRunning}
+                                isFlashing={props.isFlashing}
                                 currentTime={currentTime}
                                 startTime={startTime}
                                 stopTime={stopTime}
@@ -304,7 +303,7 @@ const Athlete = React.forwardRef((props, ref) => {
                             <TouchableOpacity style={[styles.descriptionButton]} onPress={() => reset()}>
                                 <Text style={styles.buttonText}>Reset</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.descriptionButton]} onPress={handleRename}>
+                            <TouchableOpacity style={[styles.descriptionButton]} onPress={() => props.renameAthlete(props.id)}>
                                 <Text style={styles.buttonText}>Rename</Text>
                             </TouchableOpacity>
                         </View>
