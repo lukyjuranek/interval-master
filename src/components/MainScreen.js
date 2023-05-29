@@ -3,10 +3,13 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert, Share, ImageBackground
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
 import * as Sharing from 'expo-sharing';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // TODO: only import one part of sharing
 // Disable button
 import Athlete from './Athlete';
 import RenameDialog from './RenameDialog';
+import GoProDialog from './GoProDialog';
 var bg_img = require('./../img/blue-gradient-bg.png');
 
 const MainScreen = ({ navigation }) => {
@@ -15,6 +18,22 @@ const MainScreen = ({ navigation }) => {
     const athleteRefs = useRef([]);
     const [athletes, setAthletes] = useState([]);
     const [isFlashing, setIsFlashing] = useState(false);
+    const [isProVersion, setIsProVersion] = useState(true);
+    const [highestAthleteCount, setHighestAthleteCount] = useState(0);
+
+    const checkFirstLaunch = async () => {
+        try {
+            const isFirstLaunch = await AsyncStorage.getItem('isFirstLaunch');
+
+            if (isFirstLaunch === null) {
+                // It's the first launch, navigate to the desired screen
+                navigation.navigate('Help');
+                await AsyncStorage.setItem('isFirstLaunch', 'false'); // Set the flag to indicate it's no longer the first launch
+            }
+        } catch (error) {
+            console.error('Error checking first launch:', error);
+        }
+    }
 
     const startAll = () => {
         athleteRefs.current.forEach((athleteRef) => {
@@ -78,19 +97,24 @@ const MainScreen = ({ navigation }) => {
     }
 
     const addAthlete = () => {
-        setAthletes(prevAthletes => [...prevAthletes, { name: 'Athlete ' + (prevAthletes.length + 1), id: Math.random() }]);
+        if (athletes.length >= 2 && !isProVersion) {
+            openGoProDialog();
+        } else {
+            setAthletes(prevAthletes => [...prevAthletes, { name: 'Athlete ' + (highestAthleteCount + 1), id: Math.random() }]);
+            setHighestAthleteCount(prevHighestAthleteCount => prevHighestAthleteCount + 1);
+        }
     }
 
-    const [isDialogVisible, setDialogVisible] = useState(false);
+    const [isRenameDialogVisible, setRenameDialogVisible] = useState(false);
     const [selectedAthleteId, setSelectedAthleteId] = useState(null);
 
     const selectAthlete = (id) => {
         setSelectedAthleteId(id);
-        setDialogVisible(true);
+        setRenameDialogVisible(true);
     }
 
-    const closeDialog = () => {
-        setDialogVisible(false);
+    const closeRenameDialog = () => {
+        setRenameDialogVisible(false);
     }
 
     const renameAthlete = (newName) => {
@@ -107,7 +131,7 @@ const MainScreen = ({ navigation }) => {
             return updatedAthletes;
         });
         console.log(athletes);
-        closeDialog();
+        closeRenameDialog();
     }
 
     const removeAthlete = (id) => {
@@ -124,6 +148,16 @@ const MainScreen = ({ navigation }) => {
         });
     }
 
+    const [isGoProDialogVisible, setGoProDialogVisible] = useState(false);
+
+    const openGoProDialog = () => {
+        setGoProDialogVisible(true);
+    }
+
+    const closeGoProDialog = () => {
+        setGoProDialogVisible(false);
+    }
+
     const intervalRef = useRef(null);
     useEffect(() => {
         // const interval = setInterval(() => {
@@ -134,6 +168,23 @@ const MainScreen = ({ navigation }) => {
         //     // Reset the render count
         //     renderCount = 0;
         // }, 1000);
+
+        // const fetchData = async () => {
+        //     const offerings = await Purchases.getOfferings();
+        //     setCurrentOffering(offerings.current);
+        // };
+
+        // Purchases.setDebugLogsEnabled(true);
+        // if (Platform.OS == "android") {
+        //     await Purchases.configure({ apiKey: (APIKeys.google });
+        // } else {
+        //     await Purchases.configure({ apiKey: APIKeys.apple });
+        // }
+
+        // fetchData()
+        //     .catch(console.log);
+
+        checkFirstLaunch();
 
         intervalRef.current = setInterval(() => {
             setIsFlashing((prevIsFlashing) => !prevIsFlashing);
@@ -151,16 +202,21 @@ const MainScreen = ({ navigation }) => {
         <View style={styles.container}>
 
             <RenameDialog
-                visible={isDialogVisible}
-                onClose={closeDialog}
+                visible={isRenameDialogVisible}
+                onClose={closeRenameDialog}
                 onRename={renameAthlete}
+            />
+
+            <GoProDialog
+                visible={isGoProDialogVisible}
+                onClose={closeGoProDialog}
             />
 
             <ImageBackground source={bg_img} style={styles.container} resizeMode='cover'>
                 <View style={styles.topBar}>
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.headingText}>IntervalMaster</Text>
-                        <Text style={styles.headingMiniText}>Some random text</Text>
+                        {/* <Text style={styles.headingMiniText}>Some random text</Text> */}
                     </View>
                     {/* <Entypo name="plus" size={24} color="grey" /> */}
                     <TouchableOpacity onPress={() => navigation.navigate('Settings')}>

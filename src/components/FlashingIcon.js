@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const FlashingIcon = (props) => {

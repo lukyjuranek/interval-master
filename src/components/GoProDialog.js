@@ -1,36 +1,19 @@
 import React, { useState } from 'react';
-import { View, TextInput, Modal, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, Modal, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
-const RenameDialog = (props) => {
-    const [newName, setNewName] = useState('');
-
-    const handleRename = () => {
-        if (newName.trim() !== '') {
-            props.onRename(newName);
-        }
-        // Clear input
-        setNewName('');
-    };
+const GoProDialog = (props) => {
 
     return (
         <Modal visible={props.visible} animationType="slide" transparent={true}>
             <View style={styles.container}>
                 <View style={styles.dialog}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter new name"
-                        value={newName}
-                        onChangeText={setNewName}
-                    />
                     <View style={styles.buttonContainer}>
-                        {/* <Button title="Cancel" onPress={props.onClose} style={styles.buttonRename} /> */}
                         <TouchableOpacity style={[styles.buttonCancel]} onPress={props.onClose}>
-                                <Text style={styles.buttonText}>Cancel</Text>
-                            </TouchableOpacity>
-                        {/* <Button title="Rename" onPress={handleRename} style={styles.buttonCancel} /> */}
-                        <TouchableOpacity style={[styles.buttonRename]} onPress={handleRename}>
-                                <Text style={styles.buttonText}>Rename</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.buttonText}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.buttonRename]} onPress={""}>
+                            <Text style={styles.buttonText}>Go Pro</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -88,4 +71,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RenameDialog;
+export default GoProDialog;

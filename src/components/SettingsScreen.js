@@ -2,14 +2,24 @@ import React, { Component, useState, useEffect, useRef, Profiler } from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Alert, Share, Switch, ImageBackground } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Entypo, Feather, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import * as Sharing from 'expo-sharing';
+import * as StoreReview from 'expo-store-review';
 
 var bg_img = require('./../img/gray-gradient-bg.png');
 
 const SettingsScreen = ({ navigation }) => {
 
     const [resetOnRestart, setResetOnRestart] = useState(false);
-    const [keepScreenOn, setKeepScreenOn] = useState(true)
+    const [keepScreenOn, setKeepScreenOn] = useState(true);
+
+    handleReview = async () => {
+        if (StoreReview.isAvailableAsync()) {
+            await StoreReview.requestReview()
+                .then(function (response) {
+                    console.log("response is", response)
+                })
+                .catch(e => { console.log(e) })
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -17,7 +27,6 @@ const SettingsScreen = ({ navigation }) => {
                 <View style={styles.topBar}>
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.headingText}>IntervalMaster</Text>
-                        {/* <Text style={styles.headingMiniText}>Some random text</Text> */}
                     </View>
                     {/* <Entypo name="plus" size={24} color="grey" /> */}
                     <TouchableOpacity onPress={() => navigation.navigate('Home')}>
@@ -27,8 +36,8 @@ const SettingsScreen = ({ navigation }) => {
 
                 <View style={[styles.mainWhiteContainer, styles.shadow]}>
                     <Text style={styles.settingsHeading}>Settings</Text>
-
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('hi')}>
+{/* 
+                    <TouchableOpacity style={styles.settingsLine} onPress={() => setResetOnRestart((previousState) => !previousState)}>
                         <Text style={styles.settingsLineText}>Reset on app restart</Text>
                         <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
                             <Switch
@@ -38,12 +47,12 @@ const SettingsScreen = ({ navigation }) => {
                                 trackColor={{ false: '#767577', true: '#4d75b3' }}
                             />
                         </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('hi')}>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('This option cannot be disabled yet')}>
                         <Text style={styles.settingsLineText}>Keep screen on</Text>
                         <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
                             <Switch
-                                onValueChange={() => setKeepScreenOn((previousState) => !previousState)}
+                                onValueChange={() => Alert.alert('This option cannot be disabled yet')}
                                 value={keepScreenOn}
                                 thumbColor={keepScreenOn ? '#014795' : '#f4f3f4'}
                                 trackColor={{ false: '#767577', true: '#4d75b3' }}
@@ -56,13 +65,13 @@ const SettingsScreen = ({ navigation }) => {
                             <AntDesign name="questioncircleo" size={25} color="black" />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('Go pro')}>
+                    {/* <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('Go pro')}>
                         <Text style={styles.settingsLineText}>Go pro</Text>
                         <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
                             <MaterialCommunityIcons name="crown-outline" size={25} color="black" />
                         </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingsLine} onPress={() => Alert.alert('Rate us')}>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity style={styles.settingsLine} onPress={handleReview}>
                         <Text style={styles.settingsLineText}>Rate us</Text>
                         <View style={{ width: 50, flexDirection: 'row', justifyContent: 'center' }}>
                             <AntDesign name="right" size={25} color="black" />

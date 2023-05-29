@@ -1,6 +1,6 @@
-import React, { Component, useState, useEffect, useRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
 import {
-    StyleSheet, Text, View, Image, TouchableOpacity, Alert, TouchableHighlight
+    StyleSheet, Text, View, TouchableOpacity, Alert, TouchableHighlight
 } from 'react-native';
 // import { FontAwesome5 } from '@expo/vector-icons';
 import FlashingText from './FlashingText';
@@ -144,18 +144,9 @@ const Athlete = React.forwardRef((props, ref) => {
         setFirstStartEver(true);
     }
 
-    // const getAllTimes = () => {
-    //     // Returns all interval times and lap times as a simple string so we can share it as a text message
-    //     return storedIntTimes.map((time, index) => {
-    //         return `Interval ${index + 1}: ${formatTime(time)}\nLap times: ${storedLapTimes[index].map((lapTime, index) => {
-    //             return `${index + 1}: ${formatTime(lapTime)}\n`
-    //         })}`
-    //     })
-    // }
-
     const getAllTimes = () => {
         // Returns all interval times and lap times as a simple string so we can share it as a text message
-        let result = name + "\n";
+        let result = props.name + "\n";
         try {
             result += storedIntTimes.map((intTime, index) => {
                 const intervalText = `Int ${index + 1}:\t\t\t\t${formatTime(intTime, 1)}`;
