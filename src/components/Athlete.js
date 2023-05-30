@@ -226,14 +226,14 @@ const Athlete = React.forwardRef((props, ref) => {
                 {descriptionVisible &&
                     <View style={[styles.detailsPanel, styles.shadow]}>
                         {storedIntTimes.map((item, index) => (
-                            <View style={[{ flexDirection: 'column' }]}>
+                            <View style={[{ flexDirection: 'column' }]} key={index}>
                                 <View style={styles.detailsPanelLineOfText}>
                                     <Text style={[styles.text, styles.textBold]}>Interval {index + 1}</Text>
                                     <Text style={[styles.text, styles.textBold]}>{formatTime(item, 1)}</Text>
                                 </View>
                                 {/* <Text>{storedLapTimes[index][0]}</Text> */}
                                 {storedLapTimes[index] && storedLapTimes[index].map((lapItem, lapIndex) => (
-                                    <View style={styles.detailsPanelLineOfText}>
+                                    <View style={styles.detailsPanelLineOfText} key={lapIndex}>
                                         {/* <View style={[{ flexDirection: 'column' }]}> */}
                                         <Text style={[styles.text, styles.lap]}>Lap {lapIndex + 1}</Text>
                                         <Text style={styles.text}>{formatTime(lapItem, 1)}</Text>
