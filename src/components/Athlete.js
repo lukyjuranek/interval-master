@@ -13,6 +13,9 @@ const getCurrentTime = () => {
 
 const formatTime = (time, decimalPlaces) => {
     let result;
+    if (time == undefined) {
+        return "...";
+    }
 
     const minutes = Math.floor((time / 1000 / 60) % 60);
     const seconds = Math.floor((time / 1000) % 60)
@@ -90,9 +93,11 @@ const Athlete = React.forwardRef((props, ref) => {
             setLapTime(getCurrentTime());
             setPreviousLapTime(getCurrentTime());
 
-            if (!firstStartEver) {
-                setIntervalNumber(intervalNumber + 1);
-            }
+            setStoredIntTimes(prevState => {
+                const updatedIntTimes = [...prevState];
+                updatedIntTimes[intervalNumber] = undefined;
+                return updatedIntTimes;
+            });
             // Resets the js interval if it already exists
             if (firstStartEver) {
                 setFirstStartEver(false);
@@ -118,16 +123,39 @@ const Athlete = React.forwardRef((props, ref) => {
 
     const stop = () => {
         if (isRunning) {
-            setBreakTime(getCurrentTime());
-            setStopTime(getCurrentTime());
+            // Makes the recorder and the flashing time consistent
+            let currentT = getCurrentTime();
+
+            setBreakTime(currentT);
             setIsRunning(false);
             // resets lap time
-            setLapTime(getCurrentTime());
-            setPreviousLapTime(getCurrentTime());
+            setLapTime(currentT);
+            setPreviousLapTime(currentT);
+            setStopTime(currentT);
 
-            setStoredIntTimes([...storedIntTimes, stopTime]);
+            // setStoredIntTimes([...storedIntTimes, stopTime]);
+            // Add interval time to the array at the position of the current interval number
+            setStoredIntTimes(prevState => {
+                const updatedIntTimes = [...prevState];
+                updatedIntTimes[intervalNumber] = currentT - startTime;
+                return updatedIntTimes;
+            });
+
+            setIntervalNumber(intervalNumber + 1);
         }
     }
+
+    // useEffect(() => {
+    //     if (stopTime !== null) {
+    //         setStoredIntTimes(prevState => {
+    //             const updatedIntTimes = [...prevState];
+    //             updatedIntTimes[intervalNumber] = stopTime - startTime;
+    //             return updatedIntTimes;
+    //         });
+    //     }
+    // }, [stopTime, startTime, intervalNumber]);
+
+
 
     const reset = () => {
         let currentT = getCurrentTime();
