@@ -24,7 +24,7 @@
         // "backgroundColor": "#02327A"
       },
       "versionCode": 11,
-      "package": "com.lukasjuranek.intervalmaster"
+      "package": "com.lukasjuranek.stopwatch"
     },
     "web": {
       "favicon": "./assets/favicon.png"
